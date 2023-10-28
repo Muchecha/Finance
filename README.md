@@ -15,7 +15,6 @@
 	* O conceito usado no projeto foi DDD é uma abordagem de modelagem de software que
 	  segue um conjunto de práticas com objetivo de facilitar a implementação de complexas
 	  regras e processos de negócios que tratamos como domínio.
-	* 
 
  * Tecnologias
 	* Identity (Gerenciamento de usúarios)
