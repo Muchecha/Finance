@@ -11,7 +11,7 @@ namespace Infra.Configuracao
 
         }
 
-        public DbSet<SistemaFinanceiro> SistemaFinancieros { get; set; }
+        public DbSet<SistemaFinanceiro> SistemaFinanceiro { get; set; }
         public DbSet<UsuarioSistemaFinanceiro> UsuarioSistemaFinanceiro { get; set; }
         public DbSet<Categoria> Categoria { get; set; }
         public DbSet<Despesa> Despesa { get; set; }
