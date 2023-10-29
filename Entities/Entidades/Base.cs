@@ -5,9 +5,9 @@ namespace Entities.Entidades
 {
     public class Base : Notifica
     {
-        [Display(Name = "Codigo")]
+        [Display(Name = "Código")]
         public int Id { get; set; }
-        [Display(Name = "Name")]
+        [Display(Name = "Nome")]
         public string Nome { get; set; }
     }
 }
