@@ -71,6 +71,11 @@ namespace WebApi.Controllers
             return true;
         }
 
-
+        [HttpPost("/api/ExecuteCopiaDepesasSistemaFinanceiro")]
+        [Produces("application/json")]
+        public async Task<object> ExecuteCopiaDepesasSistemaFinanceiro()
+        {
+            return await _InterfaceSistemaFinanceiro.ExecuteCopiaDepesasSistemaFinanceiro();
+        }
     }
 }
