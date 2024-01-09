@@ -1,5 +1,6 @@
 ﻿using Entities.Entidades;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -25,6 +26,7 @@ namespace WebApi.Controllers
         [AllowAnonymous]
         [Produces("application/json")]
         [HttpPost("/api/AdicionaUsuario")]
+
         public async Task<IActionResult> AdicionaUsuario([FromBody] Login login)
         {
             if(string.IsNullOrWhiteSpace(login.email) ||
@@ -42,6 +44,7 @@ namespace WebApi.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, login.senha);
+
             if(result.Errors.Any())
             {
                 return Ok(result.Errors);
@@ -55,6 +58,7 @@ namespace WebApi.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
 
             var respose_Retorn = await _userManager.ConfirmEmailAsync(user, code);
+
             if(respose_Retorn.Succeeded)
             {
                 return Ok("Usuário Adicionado!");
@@ -65,6 +69,92 @@ namespace WebApi.Controllers
             }
 
         }
+
+
+        [HttpPut("/api/AtualizaUsuario/{id}")]
+        public async Task<IActionResult> AtualizaUsuario(string id, [FromBody] Login login)
+        {
+            if(string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(login.email) || string.IsNullOrWhiteSpace(login.cpf))
+            {
+                return BadRequest("Faltam alguns dados.");
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            // Atualiza os dados do usuário
+            //user.Email = login.email; // não pode alterar
+            user.CPF = login.cpf;
+
+            //// Atualiza a senha se fornecida
+            //if (!string.IsNullOrWhiteSpace(login.senha))
+            //{
+            //    var newPasswordHash = _userManager.PasswordHasher.HashPassword(user, login.senha);
+            //    user.PasswordHash = newPasswordHash;
+            //}
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if(result.Succeeded)
+            {
+                return Ok("Usuário atualizado com sucesso!");
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+        }
+
+
+        [HttpDelete("/api/DeletaUsuario/{id}")]
+        public async Task<IActionResult> DeletaUsuario(string id)
+        {
+            if(string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest("ID do usuário não fornecido.");
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+
+            if(result.Succeeded)
+            {
+                return Ok("Usuário deletado com sucesso!");
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+        }
+
+
+        [HttpGet("/api/ListaUsuarios")]
+        public IActionResult ListaUsuarios()
+        {
+            var users = _userManager.Users.ToList();
+
+            // Você pode mapear os dados do usuário para um modelo mais simples se necessário
+            var simplifiedUserList = users.Select(user => new
+            {
+                UserId = user.Id,
+                Email = user.Email,
+                CPF = user.CPF
+                // Adicione outros campos conforme necessário
+            });
+
+            return Ok(simplifiedUserList);
+        }
+
 
     }
 }
